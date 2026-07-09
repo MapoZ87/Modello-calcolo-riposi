@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0C1017">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Riposi">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27%230C1017%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2724%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%23F2B33D%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2744%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%23F07C5F%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2764%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%237C83FF%27%2F%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27%230C1017%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2724%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%23F2B33D%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2744%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%23F07C5F%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2764%27%20width%3D%2760%27%20height%3D%2711%27%20rx%3D%275.5%27%20fill%3D%27%237C83FF%27%2F%3E%3C%2Fsvg%3E">
+<title>Giorni di riposo</title>
+<style>
+  :root{
+    --bg:#0C1017; --surface:#151B26; --surface2:#1C2432; --line:#2A3445;
+    --text:#EAF0F8; --dim:#8896AC; --dim2:#5E6B80;
+    --primo:#F2B33D; --secondo:#F07C5F; --notte:#7C83FF;
+    --accent:#F07C5F; --accent-soft:rgba(240,124,95,.15);
+    --radius:16px;
+    --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.4;padding:0 0 32px}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 0}
+
+  #fatal{display:none;margin:16px;padding:14px;border:1px solid #7c2d2d;background:#241416;
+    color:#ffb4b4;border-radius:12px;font-family:var(--mono);font-size:12px;white-space:pre-wrap}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 4px var(--accent-soft);transition:background .35s,box-shadow .35s}
+  .brand h1{font-size:16px;font-weight:700;margin:0;letter-spacing:.2px}
+  .gear{background:var(--surface2);border:1px solid var(--line);color:var(--dim);
+    width:40px;height:40px;border-radius:12px;font-size:17px;cursor:pointer}
+  .gear.on{color:var(--accent);border-color:var(--accent)}
+
+  .settings{overflow:hidden;max-height:0;transition:max-height .3s ease}
+  .settings.open{max-height:420px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;margin-bottom:14px}
+  .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}
+  .field + .field{border-top:1px solid var(--line)}
+  .field label{font-size:13px;color:var(--dim)}
+  .field .sub{display:block;font-size:11px;color:var(--dim2);margin-top:2px;max-width:210px}
+  input[type=date]{background:var(--surface2);border:1px solid var(--line);color:var(--text);
+    font-family:var(--mono);font-size:14px;padding:9px 11px;border-radius:11px;min-width:150px}
+  .stepN{display:flex;align-items:center;gap:2px}
+  .stepN button{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);
+    background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;line-height:1}
+  .stepN .val{font-family:var(--mono);font-size:17px;min-width:34px;text-align:center}
+  .warn{margin-top:8px;font-size:12px;color:var(--primo);display:none}
+  .warn.show{display:block}
+
+  .hero{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;transition:border-color .35s}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .hero .shift{font-family:var(--mono);font-weight:700;font-size:42px;line-height:1.05;
+    letter-spacing:.04em;color:var(--accent);margin:2px 0 4px;transition:color .35s}
+  .hero .range{font-size:13px;color:var(--dim);font-family:var(--mono)}
+
+  .controls{display:flex;gap:8px;margin-bottom:8px}
+  .weekstep{flex:1;display:flex;align-items:stretch;background:var(--surface);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .weekstep button{background:none;border:none;color:var(--text);width:52px;font-size:24px;cursor:pointer}
+  .weekstep .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);padding:6px 0}
+  .weekstep .center .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2);white-space:nowrap}
+  .weekstep .center input{width:64px;text-align:center;background:none;border:none;color:var(--text);
+    font-family:var(--mono);font-size:22px;font-weight:700;padding:0}
+  .today{background:var(--surface);border:1px solid var(--line);color:var(--text);
+    border-radius:14px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer}
+  .datego{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:9px 14px;margin-bottom:16px}
+  .datego span{font-size:13px;color:var(--dim)}
+
+  .list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .row{display:flex;align-items:center;gap:12px;padding:13px 16px}
+  .row + .row{border-top:1px solid var(--line)}
+  .row .pnum{font-family:var(--mono);font-size:13px;color:var(--dim2);width:22px;text-align:center;flex:none}
+  .row .pday{font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:.02em;text-transform:uppercase;flex:1}
+  .row .pdate{font-family:var(--mono);font-size:13px;color:var(--dim);flex:none}
+  .row.wknd .pday{color:var(--accent)}
+
+  .mtoggle{width:100%;margin-top:18px;text-align:left;background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:13px 16px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
+    display:flex;align-items:center;justify-content:space-between}
+  .mtoggle .chev{color:var(--dim)}
+  #matrixWrap{margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:var(--surface)}
+  #matrixWrap[hidden]{display:none}
+  table{border-collapse:collapse;font-family:var(--mono);font-size:12px;width:100%}
+  th,td{padding:8px 6px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
+  thead th{position:sticky;top:0;background:var(--surface2);z-index:2}
+  .stickyc{position:sticky;left:0;background:var(--surface2);color:var(--dim);
+    border-right:1px solid var(--line);min-width:32px}
+  thead .stickyc{z-index:3}
+  th .wk{font-weight:700}
+  th .sh{display:block;font-size:9px;font-weight:600;margin-top:2px}
+  td.cur,th.cur{box-shadow:inset 0 0 0 1.5px var(--accent)}
+  td.we{color:var(--dim)}
+
+  .foot{color:var(--dim2);font-size:11px;line-height:1.6;margin:20px 4px 0}
+  .foot b{color:var(--dim)}
+</style>
+</head>
+<body>
+<div id="fatal"></div>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span><h1>Giorni di riposo</h1></div>
+    <button class="gear" id="gear" type="button" aria-label="Impostazioni">&#9881;</button>
+  </div>
+
+  <div class="settings" id="settings">
+    <div class="panel">
+      <div class="field">
+        <label>Data ancora
+          <span class="sub">Luned&#236; in cui la Persona 1 riposa sul Secondo, settimana 1.</span>
+        </label>
+        <input type="date" id="anchor" value="2026-06-01">
+      </div>
+      <div class="field">
+        <label>Numero persone</label>
+        <div class="stepN">
+          <button id="pMinus" type="button" aria-label="Meno persone">&#8722;</button>
+          <span class="val" id="pVal">23</span>
+          <button id="pPlus" type="button" aria-label="Pi&#249; persone">+</button>
+        </div>
+      </div>
+      <div class="warn" id="warn">La data ancora non &#232; un luned&#236;: la rotazione parte da l&#236; comunque, ma per allinearla scegli un luned&#236;.</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow" id="heroWeek">Settimana 1</div>
+    <div class="shift" id="heroShift">Secondo</div>
+    <div class="range" id="heroRange"></div>
+  </div>
+
+  <div class="controls">
+    <div class="weekstep">
+      <button id="wPrev" type="button" aria-label="Settimana precedente">&#8249;</button>
+      <div class="center">
+        <span class="lab" id="wLab">Sett &#183; 2026</span>
+        <input type="number" id="wInput" min="1" max="53" value="1" inputmode="numeric" aria-label="Settimana dell'anno">
+      </div>
+      <button id="wNext" type="button" aria-label="Settimana successiva">&#8250;</button>
+    </div>
+    <button class="today" id="today" type="button">Oggi</button>
+  </div>
+
+  <div class="datego">
+    <span>Vai a una data</span>
+    <input type="date" id="goDate" aria-label="Scegli una data">
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <button class="mtoggle" id="mtoggle" type="button">
+    <span>Rotazione completa &#183; 12 settimane</span><span class="chev" id="mchev">&#8250;</span>
+  </button>
+  <div id="matrixWrap" hidden><table id="matrix"></table></div>
+
+  <p class="foot">
+    <b>Regole.</b> Turni Secondo &#8594; Primo &#8594; Notte. Riposo tra settimane: Secondo&#8594;Primo +1, Primo&#8594;Notte &#8722;1, Notte&#8594;Secondo +2.
+    Ogni 6 settimane +1 giorno e riparte il conteggio. Lavorativi: Secondo/Primo lun&#8211;sab, Notte dom&#8211;ven.
+    Ogni persona riposa un giorno dopo la precedente (P7 riparte dal luned&#236;).
+    <br><b>Nota.</b> Il campo settimana usa la numerazione ISO dell'anno (settimane da luned&#236;).
+  </p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  try{
+    var GIORNI=["luned\u00EC","marted\u00EC","mercoled\u00EC","gioved\u00EC","venerd\u00EC","sabato","domenica"];
+    var AB=["lun","mar","mer","gio","ven","sab","dom"];
+    var MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+    var SHIFTS=["Secondo","Primo","Notte"];
+    var CUM=[0,1,1,2,3,3];
+    var COL={Secondo:"#F07C5F",Primo:"#F2B33D",Notte:"#7C83FF"};
+    var SOFT={Secondo:"rgba(240,124,95,.15)",Primo:"rgba(242,179,61,.15)",Notte:"rgba(124,131,255,.15)"};
+
+    var state={anchor:new Date(2026,5,1),people:23,week:1,viewYear:2026};
+
+    function $(id){return document.getElementById(id);}
+    function mod(n,m){return ((n%m)+m)%m;}
+    function parseDate(v){ if(!v) return null; var a=v.split("-"); var y=+a[0],m=+a[1],d=+a[2];
+      if(!y||!m||!d) return null; return new Date(y,m-1,d); }
+    function pad(n){ return (n<10?"0":"")+n; }
+    function fmtInput(dt){ return dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate()); }
+    function addDays(dt,n){ var r=new Date(dt.getTime()); r.setDate(r.getDate()+n); return r; }
+    function diffDays(a,b){ return Math.round((a.getTime()-b.getTime())/86400000); }
+    function monIdx(dt){ return (dt.getDay()+6)%7; }
+    function isWeekend(dt){ var w=dt.getDay(); return w===0||w===6; }
+
+    function isoWeek(d){
+      var t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+      var day=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-day+3);
+      var y=t.getUTCFullYear();
+      var f=new Date(Date.UTC(y,0,4)); var fd=(f.getUTCDay()+6)%7; f.setUTCDate(f.getUTCDate()-fd+3);
+      return { week:Math.round((t.getTime()-f.getTime())/(7*86400000))+1, year:y };
+    }
+    function isoToMonday(y,w){
+      var j=new Date(Date.UTC(y,0,4)); var jd=(j.getUTCDay()+6)%7;
+      var m1=new Date(j.getTime()); m1.setUTCDate(j.getUTCDate()-jd);
+      var m=new Date(m1.getTime()); m.setUTCDate(m1.getUTCDate()+(w-1)*7);
+      return new Date(m.getUTCFullYear(),m.getUTCMonth(),m.getUTCDate());
+    }
+
+    function baseOffset(W){ return 5*Math.floor((W-1)/6)+CUM[mod(W-1,6)]; }
+    function shiftOf(W){ return SHIFTS[mod(W-1,3)]; }
+    function restDate(person,W){
+      var off=mod(baseOffset(W)+(person-1),6);
+      var monday=addDays(state.anchor,7*(W-1));
+      var minus=mod(W-1,3)===2?1:0;
+      return addDays(monday,off-minus);
+    }
+    function weekFromDate(dt){ return Math.floor(diffDays(dt,state.anchor)/7)+1; }
+    function mondayOfSeqWeek(W){ return addDays(state.anchor,7*(W-1)); }
+
+    function setAccent(shift){
+      var r=document.documentElement.style;
+      r.setProperty("--accent",COL[shift]);
+      r.setProperty("--accent-soft",SOFT[shift]);
+    }
+
+    function render(){
+      var W=state.week, shift=shiftOf(W);
+      setAccent(shift);
+      var monday=mondayOfSeqWeek(W);
+      var iso=isoWeek(monday);
+      state.viewYear=iso.year;
+
+      $("heroWeek").textContent="Settimana "+iso.week+" \u00B7 "+iso.year;
+      $("heroShift").textContent=shift;
+      var start=(shift==="Notte")?addDays(monday,-1):monday;
+      var end=addDays(start,5);
+      function fr(dt){ return dt.getDate()+" "+MESI[dt.getMonth()]; }
+      $("heroRange").textContent="settimana lavorativa \u00B7 "+fr(start)+" \u2013 "+fr(end);
+
+      $("wLab").textContent="Sett \u00B7 "+iso.year;
+      if(String(iso.week)!==$("wInput").value) $("wInput").value=iso.week;
+
+      var list=$("list"); list.innerHTML="";
+      for(var p=1;p<=state.people;p++){
+        var d=restDate(p,W);
+        var row=document.createElement("div");
+        row.className="row"+(isWeekend(d)?" wknd":"");
+        row.innerHTML='<div class="pnum">'+p+'</div>'+
+                      '<div class="pday">'+GIORNI[monIdx(d)]+'</div>'+
+                      '<div class="pdate">'+d.getDate()+" "+MESI[d.getMonth()]+'</div>';
+        list.appendChild(row);
+      }
+      renderMatrix();
+    }
+
+    function renderMatrix(){
+      var tbl=$("matrix"); tbl.innerHTML="";
+      var start=state.week, weeks=12, i, p;
+      var thead=document.createElement("thead");
+      var tr=document.createElement("tr");
+      tr.innerHTML='<th class="stickyc">P</th>';
+      for(i=0;i<weeks;i++){
+        var Wc=start+i, sh=shiftOf(Wc);
+        var wk=isoWeek(mondayOfSeqWeek(Wc)).week;
+        var th=document.createElement("th");
+        if(Wc===state.week) th.className="cur";
+        th.style.color=COL[sh];
+        th.innerHTML='<span class="wk">'+wk+'</span><span class="sh">'+sh.slice(0,3)+'</span>';
+        tr.appendChild(th);
+      }
+      thead.appendChild(tr); tbl.appendChild(thead);
+      var tb=document.createElement("tbody");
+      for(p=1;p<=state.people;p++){
+        var row=document.createElement("tr");
+        var cells='<td class="stickyc">'+p+'</td>';
+        for(i=0;i<weeks;i++){
+          var Wd=start+i, d=restDate(p,Wd);
+          var cls=(Wd===state.week?"cur":"")+(isWeekend(d)?" we":"");
+          cells+='<td class="'+cls.trim()+'">'+AB[monIdx(d)]+'</td>';
+        }
+        row.innerHTML=cells; tb.appendChild(row);
+      }
+      tbl.appendChild(tb);
+    }
+
+    function checkMonday(){ $("warn").className="warn"+(state.anchor&&state.anchor.getDay()!==1?" show":""); }
+    function setWeek(w){ if(isFinite(w)) state.week=Math.max(1,Math.round(w)); render(); }
+
+    $("gear").addEventListener("click",function(){
+      $("settings").classList.toggle("open"); this.classList.toggle("on");
+    });
+    $("anchor").addEventListener("change",function(){
+      var d=parseDate(this.value); if(d){ state.anchor=d; checkMonday(); render(); }
+    });
+    $("pMinus").addEventListener("click",function(){ state.people=Math.max(1,state.people-1); $("pVal").textContent=state.people; render(); });
+    $("pPlus").addEventListener("click",function(){ state.people=Math.min(60,state.people+1); $("pVal").textContent=state.people; render(); });
+    $("wPrev").addEventListener("click",function(){ setWeek(state.week-1); });
+    $("wNext").addEventListener("click",function(){ setWeek(state.week+1); });
+    $("wInput").addEventListener("change",function(){
+      var w=parseInt(this.value,10);
+      if(isFinite(w)) setWeek(weekFromDate(isoToMonday(state.viewYear,w))); else render();
+    });
+    $("wInput").addEventListener("keydown",function(e){ if(e.key==="Enter") this.blur(); });
+    $("today").addEventListener("click",function(){
+      var t=new Date(); setWeek(weekFromDate(new Date(t.getFullYear(),t.getMonth(),t.getDate())));
+    });
+    $("goDate").addEventListener("change",function(){
+      var d=parseDate(this.value); if(d) setWeek(weekFromDate(d));
+    });
+    $("mtoggle").addEventListener("click",function(){
+      var w=$("matrixWrap"); var h=w.hasAttribute("hidden");
+      if(h) w.removeAttribute("hidden"); else w.setAttribute("hidden","");
+      $("mchev").textContent=h?"\u2039":"\u203A";
+    });
+
+    $("anchor").value=fmtInput(state.anchor);
+    checkMonday();
+    (function(){var t=new Date();state.week=Math.max(1,weekFromDate(new Date(t.getFullYear(),t.getMonth(),t.getDate())));})();
+    render();
+  }catch(err){
+    var f=document.getElementById("fatal");
+    if(f){ f.style.display="block"; f.textContent="Errore: "+(err&&err.message?err.message:err)+"\n"+(err&&err.stack?err.stack:""); }
+  }
+})();
+</script>
+</body>
+</html>
