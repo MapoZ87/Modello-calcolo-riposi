@@ -38,22 +38,22 @@
     width:40px;height:40px;border-radius:12px;font-size:17px;cursor:pointer}
   .gear.on{color:var(--accent);border-color:var(--accent)}
 
-  .settings{overflow:hidden;max-height:0;transition:max-height .3s ease}
-  .settings.open{max-height:420px}
+  .settings{overflow:hidden;max-height:0;transition:max-height .35s ease}
+  .settings.open{max-height:560px}
   .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
     padding:14px;margin-bottom:14px}
-  .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}
+  .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0}
   .field + .field{border-top:1px solid var(--line)}
   .field label{font-size:13px;color:var(--dim)}
-  .field .sub{display:block;font-size:11px;color:var(--dim2);margin-top:2px;max-width:210px}
-  input[type=date]{background:var(--surface2);border:1px solid var(--line);color:var(--text);
-    font-family:var(--mono);font-size:14px;padding:9px 11px;border-radius:11px;min-width:150px}
+  .field .sub{display:block;font-size:11px;color:var(--dim2);margin-top:2px;max-width:200px}
+  input[type=date],.sel{background:var(--surface2);border:1px solid var(--line);color:var(--text);
+    font-size:14px;padding:9px 11px;border-radius:11px;min-width:148px}
+  input[type=date]{font-family:var(--mono)}
+  .sel{font-family:var(--sans)}
   .stepN{display:flex;align-items:center;gap:2px}
   .stepN button{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);
     background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;line-height:1}
   .stepN .val{font-family:var(--mono);font-size:17px;min-width:34px;text-align:center}
-  .warn{margin-top:8px;font-size:12px;color:var(--primo);display:none}
-  .warn.show{display:block}
 
   .hero{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);
     border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;transition:border-color .35s}
@@ -74,16 +74,22 @@
   .today{background:var(--surface);border:1px solid var(--line);color:var(--text);
     border-radius:14px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer}
   .datego{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
-    border-radius:14px;padding:9px 14px;margin-bottom:16px}
+    border-radius:14px;padding:9px 14px;margin-bottom:10px}
   .datego span{font-size:13px;color:var(--dim)}
+  .who{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:9px 14px;margin-bottom:16px}
+  .who span{font-size:13px;color:var(--dim)}
+  .who .sel{flex:1;min-width:0}
 
   .list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
   .row{display:flex;align-items:center;gap:12px;padding:13px 16px}
   .row + .row{border-top:1px solid var(--line)}
-  .row .pnum{font-family:var(--mono);font-size:13px;color:var(--dim2);width:22px;text-align:center;flex:none}
+  .row .pnum{font-family:var(--mono);font-size:13px;color:var(--dim2);min-width:22px;text-align:center;flex:none}
   .row .pday{font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:.02em;text-transform:uppercase;flex:1}
-  .row .pdate{font-family:var(--mono);font-size:13px;color:var(--dim);flex:none}
+  .row .pdate{font-family:var(--mono);font-size:13px;color:var(--dim);flex:none;text-align:right}
   .row.wknd .pday{color:var(--accent)}
+  .chip{font-family:var(--sans);font-size:10px;font-weight:700;text-transform:uppercase;border:1px solid;
+    border-radius:6px;padding:1px 5px;margin-left:6px;letter-spacing:.04em;vertical-align:middle}
 
   .mtoggle{width:100%;margin-top:18px;text-align:left;background:var(--surface);border:1px solid var(--line);
     border-radius:14px;padding:13px 16px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
@@ -101,6 +107,8 @@
   th .sh{display:block;font-size:9px;font-weight:600;margin-top:2px}
   td.cur,th.cur{box-shadow:inset 0 0 0 1.5px var(--accent)}
   td.we{color:var(--dim)}
+  tr.selrow td{background:rgba(255,255,255,.06)}
+  tr.selrow .stickyc{color:var(--text)}
 
   .foot{color:var(--dim2);font-size:11px;line-height:1.6;margin:20px 4px 0}
   .foot b{color:var(--dim)}
@@ -118,10 +126,23 @@
   <div class="settings" id="settings">
     <div class="panel">
       <div class="field">
-        <label>Data ancora
-          <span class="sub">Luned&#236; in cui la Persona 1 riposa sul Secondo, settimana 1.</span>
+        <label>1&#170; settimana della sequenza
+          <span class="sub">Una data qualsiasi della settimana in cui riparte il ciclo (turno Secondo).</span>
         </label>
-        <input type="date" id="anchor" value="2026-06-01">
+        <input type="date" id="refDate" value="2026-07-13">
+      </div>
+      <div class="field">
+        <label>Riposo di Persona 1
+          <span class="sub">Il giorno in cui P1 riposa in quella settimana.</span>
+        </label>
+        <select id="p1day" class="sel">
+          <option value="0">luned&#236;</option>
+          <option value="1">marted&#236;</option>
+          <option value="2">mercoled&#236;</option>
+          <option value="3">gioved&#236;</option>
+          <option value="4">venerd&#236;</option>
+          <option value="5" selected>sabato</option>
+        </select>
       </div>
       <div class="field">
         <label>Numero persone</label>
@@ -131,7 +152,6 @@
           <button id="pPlus" type="button" aria-label="Pi&#249; persone">+</button>
         </div>
       </div>
-      <div class="warn" id="warn">La data ancora non &#232; un luned&#236;: la rotazione parte da l&#236; comunque, ma per allinearla scegli un luned&#236;.</div>
     </div>
   </div>
 
@@ -158,6 +178,11 @@
     <input type="date" id="goDate" aria-label="Scegli una data">
   </div>
 
+  <div class="who">
+    <span>Mostra</span>
+    <select id="whoSel" class="sel"></select>
+  </div>
+
   <div class="list" id="list"></div>
 
   <button class="mtoggle" id="mtoggle" type="button">
@@ -166,10 +191,9 @@
   <div id="matrixWrap" hidden><table id="matrix"></table></div>
 
   <p class="foot">
-    <b>Regole.</b> Turni Secondo &#8594; Primo &#8594; Notte. Riposo tra settimane: Secondo&#8594;Primo +1, Primo&#8594;Notte &#8722;1, Notte&#8594;Secondo +2.
-    Ogni 6 settimane +1 giorno e riparte il conteggio. Lavorativi: Secondo/Primo lun&#8211;sab, Notte dom&#8211;ven.
-    Ogni persona riposa un giorno dopo la precedente (P7 riparte dal luned&#236;).
-    <br><b>Nota.</b> Il campo settimana usa la numerazione ISO dell'anno (settimane da luned&#236;).
+    <b>Ancora.</b> Imposta la 1&#170; settimana della sequenza (inizio ciclo, Secondo) e il giorno di riposo di P1 in quella settimana: da l&#236; tutto il resto &#232; calcolato.
+    <br><b>Regole.</b> Turni Secondo &#8594; Primo &#8594; Notte. Riposo tra settimane: Secondo&#8594;Primo +1, Primo&#8594;Notte &#8722;1, Notte&#8594;Secondo +3; ogni 6 settimane +1 giorno e riparte il conteggio. Lavorativi: Secondo/Primo lun&#8211;sab, Notte dom&#8211;ven. Ogni persona riposa un giorno dopo la precedente.
+    <br><b>Filtro.</b> Scegli una persona per vedere solo i suoi riposi. Puoi salvare un link diretto aggiungendo <b>#p5</b> in fondo all'indirizzo.
   </p>
 </div>
 
@@ -181,21 +205,22 @@
     var AB=["lun","mar","mer","gio","ven","sab","dom"];
     var MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
     var SHIFTS=["Secondo","Primo","Notte"];
-    var CUM=[0,1,1,2,3,3];
+    var CUM=[0,1,1,3,4,4];
     var COL={Secondo:"#F07C5F",Primo:"#F2B33D",Notte:"#7C83FF"};
     var SOFT={Secondo:"rgba(240,124,95,.15)",Primo:"rgba(242,179,61,.15)",Notte:"rgba(124,131,255,.15)"};
+    var PWEEKS=8;
 
-    var state={anchor:new Date(2026,5,1),people:23,week:1,viewYear:2026};
+    var state={ refMonday:null, p1off:5, people:23, week:1, viewYear:2026, who:0 };
 
     function $(id){return document.getElementById(id);}
     function mod(n,m){return ((n%m)+m)%m;}
     function parseDate(v){ if(!v) return null; var a=v.split("-"); var y=+a[0],m=+a[1],d=+a[2];
       if(!y||!m||!d) return null; return new Date(y,m-1,d); }
     function pad(n){ return (n<10?"0":"")+n; }
-    function fmtInput(dt){ return dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate()); }
     function addDays(dt,n){ var r=new Date(dt.getTime()); r.setDate(r.getDate()+n); return r; }
     function diffDays(a,b){ return Math.round((a.getTime()-b.getTime())/86400000); }
     function monIdx(dt){ return (dt.getDay()+6)%7; }
+    function mondayOf(dt){ return addDays(dt,-monIdx(dt)); }
     function isWeekend(dt){ var w=dt.getDay(); return w===0||w===6; }
 
     function isoWeek(d){
@@ -212,21 +237,30 @@
       return new Date(m.getUTCFullYear(),m.getUTCMonth(),m.getUTCDate());
     }
 
-    function baseOffset(W){ return 5*Math.floor((W-1)/6)+CUM[mod(W-1,6)]; }
+    function baseOffset(W){ return 7*Math.floor((W-1)/6)+CUM[mod(W-1,6)]; }
     function shiftOf(W){ return SHIFTS[mod(W-1,3)]; }
+    function mondayOfSeqWeek(W){ return addDays(state.refMonday,7*(W-1)); }
     function restDate(person,W){
-      var off=mod(baseOffset(W)+(person-1),6);
-      var monday=addDays(state.anchor,7*(W-1));
+      var off=mod(baseOffset(W)+(person-1)+state.p1off,6);
+      var monday=mondayOfSeqWeek(W);
       var minus=mod(W-1,3)===2?1:0;
       return addDays(monday,off-minus);
     }
-    function weekFromDate(dt){ return Math.floor(diffDays(dt,state.anchor)/7)+1; }
-    function mondayOfSeqWeek(W){ return addDays(state.anchor,7*(W-1)); }
+    function weekFromDate(dt){ return Math.floor(diffDays(dt,state.refMonday)/7)+1; }
 
     function setAccent(shift){
       var r=document.documentElement.style;
       r.setProperty("--accent",COL[shift]);
       r.setProperty("--accent-soft",SOFT[shift]);
+    }
+    function fr(dt){ return dt.getDate()+" "+MESI[dt.getMonth()]; }
+
+    function buildWho(){
+      var sel=$("whoSel"), html='<option value="0">Tutti</option>';
+      for(var i=1;i<=state.people;i++) html+='<option value="'+i+'">Persona '+i+'</option>';
+      sel.innerHTML=html;
+      if(state.who>state.people) state.who=0;
+      sel.value=String(state.who);
     }
 
     function render(){
@@ -239,22 +273,33 @@
       $("heroWeek").textContent="Settimana "+iso.week+" \u00B7 "+iso.year;
       $("heroShift").textContent=shift;
       var start=(shift==="Notte")?addDays(monday,-1):monday;
-      var end=addDays(start,5);
-      function fr(dt){ return dt.getDate()+" "+MESI[dt.getMonth()]; }
-      $("heroRange").textContent="settimana lavorativa \u00B7 "+fr(start)+" \u2013 "+fr(end);
+      $("heroRange").textContent="settimana lavorativa \u00B7 "+fr(start)+" \u2013 "+fr(addDays(start,5));
 
       $("wLab").textContent="Sett \u00B7 "+iso.year;
       if(String(iso.week)!==$("wInput").value) $("wInput").value=iso.week;
 
       var list=$("list"); list.innerHTML="";
-      for(var p=1;p<=state.people;p++){
-        var d=restDate(p,W);
-        var row=document.createElement("div");
-        row.className="row"+(isWeekend(d)?" wknd":"");
-        row.innerHTML='<div class="pnum">'+p+'</div>'+
-                      '<div class="pday">'+GIORNI[monIdx(d)]+'</div>'+
-                      '<div class="pdate">'+d.getDate()+" "+MESI[d.getMonth()]+'</div>';
-        list.appendChild(row);
+      if(state.who===0){
+        for(var p=1;p<=state.people;p++){
+          var d=restDate(p,W);
+          var row=document.createElement("div");
+          row.className="row"+(isWeekend(d)?" wknd":"");
+          row.innerHTML='<div class="pnum">'+p+'</div>'+
+                        '<div class="pday">'+GIORNI[monIdx(d)]+'</div>'+
+                        '<div class="pdate">'+fr(d)+'</div>';
+          list.appendChild(row);
+        }
+      } else {
+        var pp=state.who;
+        for(var k=0;k<PWEEKS;k++){
+          var Wk=W+k, sh=shiftOf(Wk), dd=restDate(pp,Wk), wk=isoWeek(mondayOfSeqWeek(Wk)).week;
+          var r2=document.createElement("div");
+          r2.className="row";
+          r2.innerHTML='<div class="pnum">'+wk+'</div>'+
+                       '<div class="pday" style="color:'+COL[sh]+'">'+GIORNI[monIdx(dd)]+'</div>'+
+                       '<div class="pdate">'+fr(dd)+' <span class="chip" style="color:'+COL[sh]+';border-color:'+COL[sh]+'">'+sh.slice(0,3)+'</span></div>';
+          list.appendChild(r2);
+        }
       }
       renderMatrix();
     }
@@ -262,12 +307,10 @@
     function renderMatrix(){
       var tbl=$("matrix"); tbl.innerHTML="";
       var start=state.week, weeks=12, i, p;
-      var thead=document.createElement("thead");
-      var tr=document.createElement("tr");
+      var thead=document.createElement("thead"), tr=document.createElement("tr");
       tr.innerHTML='<th class="stickyc">P</th>';
       for(i=0;i<weeks;i++){
-        var Wc=start+i, sh=shiftOf(Wc);
-        var wk=isoWeek(mondayOfSeqWeek(Wc)).week;
+        var Wc=start+i, sh=shiftOf(Wc), wk=isoWeek(mondayOfSeqWeek(Wc)).week;
         var th=document.createElement("th");
         if(Wc===state.week) th.className="cur";
         th.style.color=COL[sh];
@@ -278,6 +321,7 @@
       var tb=document.createElement("tbody");
       for(p=1;p<=state.people;p++){
         var row=document.createElement("tr");
+        if(p===state.who) row.className="selrow";
         var cells='<td class="stickyc">'+p+'</td>';
         for(i=0;i<weeks;i++){
           var Wd=start+i, d=restDate(p,Wd);
@@ -289,17 +333,14 @@
       tbl.appendChild(tb);
     }
 
-    function checkMonday(){ $("warn").className="warn"+(state.anchor&&state.anchor.getDay()!==1?" show":""); }
-    function setWeek(w){ if(isFinite(w)) state.week=Math.max(1,Math.round(w)); render(); }
+    function setWeek(w){ if(isFinite(w)) state.week=Math.round(w); render(); }
+    function readRef(){ var d=parseDate($("refDate").value); if(d) state.refMonday=mondayOf(d); }
 
-    $("gear").addEventListener("click",function(){
-      $("settings").classList.toggle("open"); this.classList.toggle("on");
-    });
-    $("anchor").addEventListener("change",function(){
-      var d=parseDate(this.value); if(d){ state.anchor=d; checkMonday(); render(); }
-    });
-    $("pMinus").addEventListener("click",function(){ state.people=Math.max(1,state.people-1); $("pVal").textContent=state.people; render(); });
-    $("pPlus").addEventListener("click",function(){ state.people=Math.min(60,state.people+1); $("pVal").textContent=state.people; render(); });
+    $("gear").addEventListener("click",function(){ $("settings").classList.toggle("open"); this.classList.toggle("on"); });
+    $("refDate").addEventListener("change",function(){ readRef(); render(); });
+    $("p1day").addEventListener("change",function(){ state.p1off=+this.value; render(); });
+    $("pMinus").addEventListener("click",function(){ state.people=Math.max(1,state.people-1); $("pVal").textContent=state.people; buildWho(); render(); });
+    $("pPlus").addEventListener("click",function(){ state.people=Math.min(99,state.people+1); $("pVal").textContent=state.people; buildWho(); render(); });
     $("wPrev").addEventListener("click",function(){ setWeek(state.week-1); });
     $("wNext").addEventListener("click",function(){ setWeek(state.week+1); });
     $("wInput").addEventListener("change",function(){
@@ -310,18 +351,24 @@
     $("today").addEventListener("click",function(){
       var t=new Date(); setWeek(weekFromDate(new Date(t.getFullYear(),t.getMonth(),t.getDate())));
     });
-    $("goDate").addEventListener("change",function(){
-      var d=parseDate(this.value); if(d) setWeek(weekFromDate(d));
+    $("goDate").addEventListener("change",function(){ var d=parseDate(this.value); if(d) setWeek(weekFromDate(d)); });
+    $("whoSel").addEventListener("change",function(){
+      state.who=parseInt(this.value,10)||0;
+      try{ location.hash = state.who? ("p"+state.who) : ""; }catch(e){}
+      render();
     });
     $("mtoggle").addEventListener("click",function(){
-      var w=$("matrixWrap"); var h=w.hasAttribute("hidden");
+      var w=$("matrixWrap"), h=w.hasAttribute("hidden");
       if(h) w.removeAttribute("hidden"); else w.setAttribute("hidden","");
       $("mchev").textContent=h?"\u2039":"\u203A";
     });
 
-    $("anchor").value=fmtInput(state.anchor);
-    checkMonday();
-    (function(){var t=new Date();state.week=Math.max(1,weekFromDate(new Date(t.getFullYear(),t.getMonth(),t.getDate())));})();
+    // init
+    readRef();
+    state.p1off=+$("p1day").value;
+    try{ var hm=(location.hash||"").match(/(\d+)/); if(hm){ var n=+hm[1]; if(n>=1&&n<=state.people) state.who=n; } }catch(e){}
+    buildWho();
+    (function(){ var t=new Date(); state.week=Math.max(1, weekFromDate(new Date(t.getFullYear(),t.getMonth(),t.getDate()))); })();
     render();
   }catch(err){
     var f=document.getElementById("fatal");
